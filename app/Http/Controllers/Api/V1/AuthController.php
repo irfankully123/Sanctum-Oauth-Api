@@ -57,11 +57,7 @@ class AuthController extends Controller
             ], ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
-        $expirationTimeInMinutes = 60;
-
-        $token = $user->createToken($user->name . '-AuthToken', [
-                'expires' => $expirationTimeInMinutes
-        ])->plainTextToken;
+        $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
 
         return response()->json([
             'token_type' => 'Bearer',
