@@ -48,22 +48,26 @@ class AuthController extends Controller
             'email' => 'required|string|email',
             'password' => 'required|string|min:8|max:20',
         ]);
-    
+
         $user = User::where('email', $loginUserData['email'])->first();
-    
+
         if (!$user || !Hash::check($loginUserData['password'], $user->password)) {
             return response()->json([
                 'message' => 'Invalid Credentials'
-            ], ResponseAlias::HTTP_UNAUTHORIZED); 
+            ], ResponseAlias::HTTP_UNAUTHORIZED);
         }
-    
-        $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
-    
+
+        $expirationTimeInMinutes = 60;
+
+        $token = $user->createToken($user->name . '-AuthToken', [
+                'expires' => $expirationTimeInMinutes
+        ])->plainTextToken;
+
         return response()->json([
             'token_type' => 'Bearer',
             'token' => $token
         ], ResponseAlias::HTTP_OK);
     }
-    
+
 
 }
